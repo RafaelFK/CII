@@ -11,6 +11,7 @@ struct T {
         void *x;
         struct elem *link;
     } *head;
+    char mark;
 };
 
 T Stack_new(void) {
@@ -19,19 +20,20 @@ T Stack_new(void) {
     NEW(stk);
     stk->count = 0;
     stk->head = NULL;
+    stk->mark = 0xAB;
 
     return stk;
 }
 
 int Stack_empty(T stk) {
-    assert(stk);
+    assert(stk && stk->mark == 0xAB);
     return stk->count == 0;
 }
 
 void Stack_push(T stk, void *x) {
     struct elem *t;
     
-    assert(stk);
+    assert(stk && stk->mark == 0xAB);
     NEW(t);
     t->x = x;
     t->link = stk->head;
@@ -42,7 +44,7 @@ void Stack_push(T stk, void *x) {
 void *Stack_pop(T stk) {
     struct elem *t;
     void *x;
-    assert(stk);
+    assert(stk && stk->mark == 0xAB);
     assert(stk->count > 0);
 
     t = stk->head;
@@ -58,7 +60,7 @@ void *Stack_pop(T stk) {
 void Stack_free(T *stk) {
     struct elem *t, *u;
 
-    assert(stk && *stk);
+    assert(stk && stk->mark == 0xAB && *stk);
     for(t = (*stk)->head; t; t = u) {
         u = t->link;
         FREE(t);
